@@ -57,6 +57,15 @@ However, it's better to have "finally" there:
 Unfortunately, "finally" is only available in some libraries such as Bluebird, or Q+, those are quite heavy to load for client side usage. What I need is just a basic prototype, a simple polyfill with "finally" implemented.
 
 
+## What
+
+This version only supports the Promise constructor and 3 static methods:
+
+- Promise.resolve
+- Promise.reject
+- Promise.all
+
+
 ## How
 
 In node.js
@@ -104,14 +113,6 @@ I like Promise
 I need finally
 Done
 ```
-
-## API
-
-This version only supports the Promise constructor and 3 static methods:
-
-- Promise.resolve
-- Promise.reject
-- Promise.all
 
 
 ##### Using SystemJS
