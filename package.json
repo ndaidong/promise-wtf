@@ -1,0 +1,45 @@
+{
+  "version": "0.0.6",
+  "name": "promise-wtf",
+  "description": "Lightweight Promise implementation with the 'finally' method",
+  "homepage": "http://techpush.net",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ndaidong/promise-wtf.git"
+  },
+  "author": "Dong Nguyen <ndaidong@gmail.com> (https://twitter.com/ndaidong)",
+  "main": "./index.js",
+  "engines": {
+    "node": ">= 4.0"
+  },
+  "scripts": {
+    "test": "npm run build && ./node_modules/.bin/tape test/start.js | tap-spec",
+    "coverage": "npm run build && ./node_modules/.bin/nyc tape test/start.js | tap-spec",
+    "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
+    "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
+    "build": "node build/minify"
+  },
+  "devDependencies": {
+    "colors": "latest",
+    "coveralls": "latest",
+    "nyc": "latest",
+    "request": "latest",
+    "tap-spec": "latest",
+    "tape": "latest"
+  },
+  "keywords": [
+    "library",
+    "promise",
+    "util"
+  ],
+  "license": "MIT",
+  "maintainers": [
+    "ndaidong <ndaidong@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/ndaidong/promise-wtf/issues"
+  },
+  "directories": {
+    "test": "test"
+  }
+}
