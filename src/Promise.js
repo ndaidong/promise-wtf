@@ -14,102 +14,106 @@
   const REJECTED = 1;
   const RESOLVED = 2;
 
-  function P(fn) {
+  class P {
 
-    let _state = PENDING;
-    let _deferred = null;
-    let _value;
+    constructor(fn) {
 
-    let self = this;
+      let _state = PENDING;
+      let _deferred = null;
+      let _value;
 
-    let handle = (instance) => {
+      let self = this;
 
-      if (_state === PENDING) {
-        _deferred = instance;
-        return false;
-      }
+      let handle = (instance) => {
 
-      let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
+        if (_state === PENDING) {
+          _deferred = instance;
+          return false;
+        }
 
-      if (!cb) {
-        return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
-      }
+        let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
 
-      return instance.resolve(cb(_value));
-    };
+        if (!cb) {
+          return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
+        }
 
-    let reject = (reason) => {
-      _state = REJECTED;
-      _value = reason;
+        return instance.resolve(cb(_value));
+      };
 
-      if (_deferred) {
-        handle(_deferred);
-      }
-    };
+      let reject = (reason) => {
+        _state = REJECTED;
+        _value = reason;
 
-    let resolve = (instance) => {
-      if (instance && typeof instance.then === 'function') {
-        instance.then(resolve, reject);
-        return;
-      }
-      _state = RESOLVED;
-      _value = instance;
+        if (_deferred) {
+          handle(_deferred);
+        }
+      };
 
-      if (_deferred) {
-        handle(_deferred);
-      }
-    };
+      let resolve = (instance) => {
+        if (instance && typeof instance.then === 'function') {
+          instance.then(resolve, reject);
+          return;
+        }
+        _state = RESOLVED;
+        _value = instance;
 
-    self.then = (onResolved, onRejected) => {
-      return new P((_resolve, _reject) => {
-        return handle({
-          onResolved: onResolved,
-          onRejected: onRejected,
-          resolve: _resolve,
-          reject: _reject
+        if (_deferred) {
+          handle(_deferred);
+        }
+      };
+
+      self.then = (onResolved, onRejected) => {
+        return new P((_resolve, _reject) => {
+          return handle({
+            onResolved: onResolved,
+            onRejected: onRejected,
+            resolve: _resolve,
+            reject: _reject
+          });
+        });
+      };
+
+      self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
+        return self.then(null, onRejected);
+      };
+
+      self['finally'] = (func) => { // eslint-disable-line dot-notation
+        return self.then(func);
+      };
+
+      return fn(resolve, reject);
+    }
+
+    static resolve(value) {
+      return new P((resolve) => {
+        return resolve(value);
+      });
+    }
+
+    static reject(value) {
+      return new P((resolve, reject) => {
+        return reject(value);
+      });
+    }
+
+    static all(promises) {
+
+      let results = [];
+      let done = P.resolve(null);
+
+      promises.forEach((promise) => {
+        done = done.then(() => {
+          return promise;
+        }).then((value) => {
+          results.push(value);
         });
       });
-    };
-
-    self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
-      return self.then(null, onRejected);
-    };
-
-    self['finally'] = (func) => { // eslint-disable-line dot-notation
-      return self.then(func);
-    };
-
-    return fn(resolve, reject);
+      return done.then(() => {
+        return results;
+      });
+    }
   }
 
-  P.resolve = (value) => {
-    return new P((resolve) => {
-      return resolve(value);
-    });
-  };
-
-  P.reject = (value) => {
-    return new P((resolve, reject) => {
-      return reject(value);
-    });
-  };
-
-  P.all = (promises) => {
-
-    let results = [];
-    let done = P.resolve(null);
-
-    promises.forEach((promise) => {
-      done = done.then(() => {
-        return promise;
-      }).then((value) => {
-        results.push(value);
-      });
-    });
-    return done.then(() => {
-      return results;
-    });
-  };
 
   // exports
   if (ENV === 'node') {
