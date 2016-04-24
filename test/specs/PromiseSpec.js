@@ -10,7 +10,6 @@
 
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
 var test = require('tape');
 
@@ -21,9 +20,18 @@ var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
 };
 
-var read = (file) => {
+var fakeAsyncRead = (text, callback) => {
+  setTimeout(() => {
+    if (!text) {
+      return callback(new Error('Expected a string'));
+    }
+    return callback(null, text);
+  }, 200 + Math.random() * 1000);
+};
+
+var fakePromiseRead = (text) => {
   return new Promise((resolve, reject) => {
-    fs.readFile(file, 'utf8', (err, content) => {
+    return fakeAsyncRead(text, (err, content) => {
       if (err) {
         return reject(err);
       }
@@ -34,7 +42,7 @@ var read = (file) => {
 
 test('Testing Promise constructor', (assert) => {
 
-  let instance = read('./test/manual/hello.txt');
+  let instance = fakePromiseRead('Hello world');
 
   assert.ok(hasMethod(instance, 'then'), 'Promise instance must have "then" method');
   assert.ok(hasMethod(instance, 'catch'), 'Promise instance must have "catch" method');
@@ -44,10 +52,10 @@ test('Testing Promise constructor', (assert) => {
 
 test('Testing Promise result after then', (assert) => {
 
-  let instance = read('./test/manual/hello.txt');
+  let instance = fakePromiseRead('Hello');
 
   instance.then((s) => {
-    assert.deepEquals(s, 'Hello\n', 'It must return content loaded from file');
+    assert.deepEquals(s, 'Hello', 'It must return content');
   }).catch((e) => {
     console.log(e);
   }).finally(() => {
@@ -56,15 +64,188 @@ test('Testing Promise result after then', (assert) => {
 });
 
 test('Testing Promise result after catch', (assert) => {
-  let instance = read('ninonina');
+  let instance = fakePromiseRead();
   assert.doesNotThrow(instance.catch, true, 'It must not throw any error');
   assert.end();
 });
 
 test('Testing Promise.all', (assert) => {
-  var promise = Promise.resolve(3);
-  Promise.all([ true, promise ]).then((values) => {
-    assert.deepEquals(values, [ true, 3 ], 'It must return [true, 3]');
+  Promise.all([
+    fakePromiseRead('One'),
+    fakePromiseRead('Two'),
+    fakePromiseRead('Three'),
+    fakePromiseRead('Four'),
+    fakePromiseRead('Five'),
+    fakePromiseRead('Six'),
+    fakePromiseRead('Seven'),
+    fakePromiseRead('Eight'),
+    fakePromiseRead('Nine'),
+    fakePromiseRead('Ten')
+  ]).then((results) => {
+    let s = results.join(' ');
+    let r = 'One Two Three Four Five Six Seven Eight Nine Ten';
+    assert.deepEquals(s, r, `It must return ${r}`);
+    assert.end();
+  });
+});
+
+test('Testing Promise.series', (assert) => {
+  let arr = [];
+  Promise.series([
+    (next) => {
+      let t = 'One';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Two';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Three';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Four';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Five';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Six';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Seven';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Eight';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Nine';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Ten';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    }
+  ]).then(() => {
+    let s = arr.join(' ');
+    let r = 'One Two Three Four Five Six Seven Eight Nine Ten';
+    assert.deepEquals(s, r, `It must return ${r}`);
+  }).catch((err) => {
+    console.log(err);
+  }).finally(() => {
+    assert.end();
+  });
+});
+
+test('Testing Promise.series fail', (assert) => {
+  let arr = [];
+  Promise.series([
+    (next) => {
+      let t = 'One';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Two';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Three';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = null;
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    },
+    (next) => {
+      let t = 'Five';
+      fakeAsyncRead(t, (err, content) => {
+        if (!err && content) {
+          arr.push(content);
+        }
+        next(err, content);
+      });
+    }
+  ]).then(() => {
+    assert.deepEquals(null, null, 'Nothing here');
+  }).catch((error) => {
+    assert.deepEquals(error, new Error('Expected a string'), 'It must return error here');
+  }).finally(() => {
     assert.end();
   });
 });
