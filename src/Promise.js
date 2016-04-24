@@ -14,6 +14,14 @@
   const REJECTED = 1;
   const RESOLVED = 2;
 
+  var isFunction = (v) => {
+    return v && {}.toString.call(v) === '[object Function]';
+  };
+
+  var doNothing = () => {
+    return;
+  };
+
   class P {
 
     constructor(fn) {
@@ -74,11 +82,17 @@
       };
 
       self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
-        return self.then(null, onRejected);
+        if (onRejected && isFunction(onRejected)) {
+          return self.then(null, onRejected);
+        }
+        return doNothing();
       };
 
       self['finally'] = (func) => { // eslint-disable-line dot-notation
-        return self.then(func);
+        if (func && isFunction(func)) {
+          return self.then(func);
+        }
+        return doNothing();
       };
 
       return fn(resolve, reject);
@@ -110,6 +124,32 @@
       });
       return done.then(() => {
         return results;
+      });
+    }
+
+    static series(tasks) {
+      return new P((resolve, reject) => {
+        let exec, check;
+        let k = 0, t = tasks.length;
+
+        exec = (err) => {
+          if (err) {
+            return reject(err);
+          }
+          return check();
+        };
+
+        check = () => {
+          k++;
+          if (k <= t) {
+            let f = tasks[k - 1];
+            return f(exec);
+          }
+          return resolve();
+        };
+
+        return check();
+
       });
     }
   }
