@@ -58,7 +58,7 @@
       };
 
       let resolve = (instance) => {
-        if (instance && typeof instance.then === 'function') {
+        if (instance && isFunction(instance.then)) {
           instance.then(resolve, reject);
           return;
         }
@@ -84,13 +84,6 @@
       self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
         if (onRejected && isFunction(onRejected)) {
           return self.then(null, onRejected);
-        }
-        return doNothing();
-      };
-
-      self['finally'] = (func) => { // eslint-disable-line dot-notation
-        if (func && isFunction(func)) {
-          return self.then(func);
         }
         return doNothing();
       };
@@ -126,45 +119,58 @@
         return results;
       });
     }
-
-    static series(tasks) {
-      return new P((resolve, reject) => {
-        let exec, check;
-        let k = 0, t = tasks.length;
-
-        exec = (err) => {
-          if (err) {
-            return reject(err);
-          }
-          return check();
-        };
-
-        check = () => {
-          k++;
-          if (k <= t) {
-            let f = tasks[k - 1];
-            return f(exec);
-          }
-          return resolve();
-        };
-
-        return check();
-
-      });
-    }
   }
 
+  var $P;
+  var root = ENV === 'node' ? global : window;
+  if (!root.Promise) {
+    $P = P;
+  } else {
+    $P = root.Promise;
+  }
+
+  $P.prototype['finally'] = (func) => { // eslint-disable-line dot-notation
+    if (func && isFunction(func)) {
+      return func();
+    }
+    return doNothing();
+  };
+
+  $P.series = (tasks) => {
+    return new $P((resolve, reject) => {
+      let exec, check;
+      let k = 0, t = tasks.length;
+
+      exec = (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return check();
+      };
+
+      check = () => {
+        k++;
+        if (k <= t) {
+          let f = tasks[k - 1];
+          return f(exec);
+        }
+        return resolve();
+      };
+
+      return check();
+
+    });
+  };
 
   // exports
   if (ENV === 'node') {
-    module.exports = P;
+    module.exports = $P;
   } else {
-    let root = window || {};
     if (root.define && root.define.amd) {
       root.define(() => {
-        return P;
+        return $P;
       });
     }
-    root.Promise = P;
+    root.Promise = $P;
   }
 })();
