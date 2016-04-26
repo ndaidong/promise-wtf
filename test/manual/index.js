@@ -11,7 +11,7 @@ var fakeAsyncRead = (text, callback) => {
       return callback(new Error('Expected a string'), null);
     }
     return callback(null, text);
-  }, 200 + Math.random() * 1000);
+  }, 100 + Math.random() * 300);
 };
 
 var fakePromiseRead = (text) => {

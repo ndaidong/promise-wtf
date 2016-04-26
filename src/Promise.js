@@ -18,102 +18,78 @@
     return v && {}.toString.call(v) === '[object Function]';
   };
 
-  var doNothing = () => {
-    return;
+  var doNothing = () => {};
+  var doItASAP = (f) => {
+    return setTimeout(f, 0);
+  };
+
+  var _handle, _reject, _resolve;
+
+  _handle = (instance) => {
+    return instance;
+  };
+
+  _reject = (reason) => {
+    return reason;
+  };
+
+  _resolve = (promise, value) => {
+    return value;
   };
 
   class P {
 
     constructor(fn) {
 
-      let _state = PENDING;
-      let _deferred = null;
-      let _value;
-
       let self = this;
-
-      let handle = (instance) => {
-
-        if (_state === PENDING) {
-          _deferred = instance;
-          return false;
-        }
-
-        let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
-
-        if (!cb) {
-          return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
-        }
-
-        return instance.resolve(cb(_value));
-      };
-
-      let reject = (reason) => {
-        _state = REJECTED;
-        _value = reason;
-
-        if (_deferred) {
-          handle(_deferred);
-        }
-      };
-
-      let resolve = (instance) => {
-        if (instance && typeof instance.then === 'function') {
-          instance.then(resolve, reject);
-          return;
-        }
-        _state = RESOLVED;
-        _value = instance;
-
-        if (_deferred) {
-          handle(_deferred);
-        }
-      };
+      self._state = PENDING;
+      self._value = null;
+      self._queue = [];
+      self._promise = null;
 
       self.then = (onResolved, onRejected) => {
-        return new P((_resolve, _reject) => {
-          return handle({
-            onResolved: onResolved,
-            onRejected: onRejected,
-            resolve: _resolve,
-            reject: _reject
-          });
+        let p = new P(doNothing);
+        handle({
+          onResolved: isFunction(onResolved) ? onResolved : null,
+          onRejected: isFunction(onRejected) ? onRejected : null,
+          promise: p
         });
+        return p;
       };
 
       self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
         if (onRejected && isFunction(onRejected)) {
-          return self.then(null, onRejected);
+          self.then(null, onRejected);
         }
-        return doNothing();
       };
 
       self['finally'] = (func) => { // eslint-disable-line dot-notation
         if (func && isFunction(func)) {
-          return self.then(func);
+          self.then(func);
         }
-        return doNothing();
       };
 
-      return fn(resolve, reject);
+      try {
+        return _handle(self.then);
+      } catch (e) {
+        return _reject(e);
+      }
     }
 
     static resolve(value) {
-      return new P((resolve) => {
-        return resolve(value);
-      });
+      let p = P.resolve(doNothing);
+      return _resolve(p, value);
     }
 
-    static reject(value) {
-      return new P((resolve, reject) => {
-        return reject(value);
-      });
+    static reject(reason) {
+      let p = P.resolve(doNothing);
+      return _reject(p, reason);
     }
 
     static all(promises) {
 
       let results = [];
-      let done = P.resolve(null);
+      let done = P.resolve(doNothing);
 
       promises.forEach((promise) => {
         done = done.then(() => {
