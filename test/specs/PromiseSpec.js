@@ -13,8 +13,12 @@
 var path = require('path');
 var test = require('tape');
 
-var rootDir = '../../dist/';
-var Promise = require(path.join(rootDir, 'Promise.min.js'));
+var root = global || window;
+root.Promise = false;
+
+const TESTDEV = 0;
+var rootDir = TESTDEV === 1 ? '../../src/' : '../../dist/';
+var Promise = require(path.join(rootDir, TESTDEV === 1 ? 'Promise.js' : 'Promise.min.js'));
 
 var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
@@ -63,11 +67,6 @@ test('Testing Promise result after then', (assert) => {
   });
 });
 
-test('Testing Promise result after catch', (assert) => {
-  let instance = fakePromiseRead();
-  assert.doesNotThrow(instance.catch, true, 'It must not throw any error');
-  assert.end();
-});
 
 test('Testing Promise.all', (assert) => {
   Promise.all([

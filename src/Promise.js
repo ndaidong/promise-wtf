@@ -18,78 +18,95 @@
     return v && {}.toString.call(v) === '[object Function]';
   };
 
-  var doNothing = () => {};
-  var doItASAP = (f) => {
-    return setTimeout(f, 0);
-  };
-
-  var _handle, _reject, _resolve;
-
-  _handle = (instance) => {
-    return instance;
-  };
-
-  _reject = (reason) => {
-    return reason;
-  };
-
-  _resolve = (promise, value) => {
-    return value;
+  var doNothing = () => {
+    return;
   };
 
   class P {
 
     constructor(fn) {
 
+      let _state = PENDING;
+      let _deferred = null;
+      let _value;
+
       let self = this;
-      self._state = PENDING;
-      self._value = null;
-      self._queue = [];
-      self._promise = null;
+
+      let handle = (instance) => {
+
+        if (_state === PENDING) {
+          _deferred = instance;
+          return false;
+        }
+
+        let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
+
+        if (!cb) {
+          return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
+        }
+
+        return instance.resolve(cb(_value));
+      };
+
+      let reject = (reason) => {
+        _state = REJECTED;
+        _value = reason;
+
+        if (_deferred) {
+          handle(_deferred);
+        }
+      };
+
+      let resolve = (instance) => {
+        if (instance && isFunction(instance.then)) {
+          instance.then(resolve, reject);
+          return;
+        }
+        _state = RESOLVED;
+        _value = instance;
+
+        if (_deferred) {
+          handle(_deferred);
+        }
+      };
 
       self.then = (onResolved, onRejected) => {
-        let p = new P(doNothing);
-        handle({
-          onResolved: isFunction(onResolved) ? onResolved : null,
-          onRejected: isFunction(onRejected) ? onRejected : null,
-          promise: p
+        return new P((_resolve, _reject) => {
+          return handle({
+            onResolved: onResolved,
+            onRejected: onRejected,
+            resolve: _resolve,
+            reject: _reject
+          });
         });
-        return p;
       };
 
       self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
         if (onRejected && isFunction(onRejected)) {
-          self.then(null, onRejected);
+          return self.then(null, onRejected);
         }
+        return doNothing();
       };
 
-      self['finally'] = (func) => { // eslint-disable-line dot-notation
-        if (func && isFunction(func)) {
-          self.then(func);
-        }
-      };
-
-      try {
-        return _handle(self.then);
-      } catch (e) {
-        return _reject(e);
-      }
+      return fn(resolve, reject);
     }
 
     static resolve(value) {
-      let p = P.resolve(doNothing);
-      return _resolve(p, value);
+      return new P((resolve) => {
+        return resolve(value);
+      });
     }
 
-    static reject(reason) {
-      let p = P.resolve(doNothing);
-      return _reject(p, reason);
+    static reject(value) {
+      return new P((resolve, reject) => {
+        return reject(value);
+      });
     }
 
     static all(promises) {
 
       let results = [];
-      let done = P.resolve(doNothing);
+      let done = P.resolve(null);
 
       promises.forEach((promise) => {
         done = done.then(() => {
@@ -102,45 +119,58 @@
         return results;
       });
     }
-
-    static series(tasks) {
-      return new P((resolve, reject) => {
-        let exec, check;
-        let k = 0, t = tasks.length;
-
-        exec = (err) => {
-          if (err) {
-            return reject(err);
-          }
-          return check();
-        };
-
-        check = () => {
-          k++;
-          if (k <= t) {
-            let f = tasks[k - 1];
-            return f(exec);
-          }
-          return resolve();
-        };
-
-        return check();
-
-      });
-    }
   }
 
+  var $P;
+  var root = ENV === 'node' ? global : window;
+  if (!root.Promise) {
+    $P = P;
+  } else {
+    $P = root.Promise;
+  }
+
+  $P.prototype['finally'] = (func) => { // eslint-disable-line dot-notation
+    if (func && isFunction(func)) {
+      return func();
+    }
+    return doNothing();
+  };
+
+  $P.series = (tasks) => {
+    return new $P((resolve, reject) => {
+      let exec, check;
+      let k = 0, t = tasks.length;
+
+      exec = (err) => {
+        if (err) {
+          return reject(err);
+        }
+        return check();
+      };
+
+      check = () => {
+        k++;
+        if (k <= t) {
+          let f = tasks[k - 1];
+          return f(exec);
+        }
+        return resolve();
+      };
+
+      return check();
+
+    });
+  };
 
   // exports
   if (ENV === 'node') {
-    module.exports = P;
+    module.exports = $P;
   } else {
-    let root = window || {};
     if (root.define && root.define.amd) {
       root.define(() => {
-        return P;
+        return $P;
       });
     }
-    root.Promise = P;
+    root.Promise = $P;
   }
 })();
