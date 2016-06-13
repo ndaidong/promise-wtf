@@ -8,12 +8,10 @@
 /* eslint no-new-func: 0*/
 /* eslint no-console: 0*/
 
-'use strict';
-
 var path = require('path');
 var test = require('tape');
 
-var root = global || window;
+var root = global;
 root.Promise = false;
 
 const TESTDEV = 0;
@@ -25,12 +23,13 @@ var hasMethod = (ob, m) => {
 };
 
 var fakeAsyncRead = (text, callback) => {
+  let t = Math.random() * 1000;
   setTimeout(() => {
     if (!text) {
       return callback(new Error('Expected a string'));
     }
     return callback(null, text);
-  }, 200 + Math.random() * 1000);
+  }, 200 + t);
 };
 
 var fakePromiseRead = (text) => {
@@ -265,7 +264,7 @@ test('Testing Promise.resolve', (assert) => {
     assert.deepEquals(data, null, 'Nothing here');
   });
 
-  var p = Promise.resolve([ 1, 2, 3 ]);
+  var p = Promise.resolve([1, 2, 3]);
   p.then((v) => {
     assert.deepEquals(v[0], 1, 'It must return 1 here');
   });

@@ -41,7 +41,7 @@
       let _deferred = null;
       let _value;
 
-      let self = this;
+      let self = this; // eslint-disable-line consistent-this
 
       let handle = (instance) => {
 
@@ -84,8 +84,8 @@
       self.then = (onResolved, onRejected) => {
         return new P((_resolve, _reject) => {
           return handle({
-            onResolved: onResolved,
-            onRejected: onRejected,
+            onResolved,
+            onRejected,
             resolve: _resolve,
             reject: _reject
           });
@@ -132,13 +132,8 @@
     }
   }
 
-  var $P;
   var root = ENV === 'node' ? global : window;
-  if (!root.Promise) {
-    $P = P;
-  } else {
-    $P = root.Promise;
-  }
+  var $P = root.Promise || P;
 
   $P.prototype['finally'] = function(func) { // eslint-disable-line
     return this.then((value) => {

@@ -1,15 +1,14 @@
 
-'use strict';
-
 var Promise = require('../../src/main');
 
 var fakeAsyncRead = (text, callback) => {
+  let t = Math.random() * 300;
   setTimeout(() => {
     if (!text) {
       return callback(new Error('Expected a string'), null);
     }
     return callback(null, text);
-  }, 100 + Math.random() * 300);
+  }, 100 + t);
 };
 
 var fakePromiseRead = (text) => {
@@ -64,7 +63,7 @@ var p3 = new Promise((resolve) => {
   setTimeout(resolve, 100, 'foo');
 });
 
-Promise.all([ p1, p2, p3 ]).then((values) => {
+Promise.all([p1, p2, p3]).then((values) => {
   console.log(values); // [3, 1337, "foo"]
 });
 

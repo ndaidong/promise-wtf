@@ -1,5 +1,3 @@
-'use strict';
-
 var fs = require('fs');
 var exec = require('child_process').execSync;
 var request = require('request');
@@ -8,7 +6,7 @@ var colors = require('colors');
 const API = 'https://closure-compiler.appspot.com/compile';
 
 const LEVEL = 'SIMPLE_OPTIMIZATIONS';
-const INFO = [ 'compiled_code', 'warnings', 'errors' ];
+const INFO = ['compiled_code', 'warnings', 'errors'];
 const OUTPUT = 'json';
 
 const SOURCE = './src/';
@@ -26,10 +24,10 @@ var send = (source) => {
       ${API}?compilation_level=${LEVEL}&output_format=${OUTPUT}&${info}
     `;
     let data = {
-      'js_code': source
+      js_code: source // eslint-disable-line camelcase
     };
 
-    return request.post(target, { form: data }, (err, response, body) => {
+    return request.post(target, {form: data}, (err, response, body) => {
       if (err) {
         return reject(err);
       }
