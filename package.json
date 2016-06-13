@@ -1,5 +1,5 @@
 {
-  "version": "0.1.1",
+  "version": "0.1.2",
   "name": "promise-wtf",
   "description": "Lightweight Promise implementation with the 'finally' method",
   "homepage": "http://techpush.net",
@@ -10,7 +10,7 @@
   "author": "Dong Nguyen <ndaidong@gmail.com> (https://twitter.com/ndaidong)",
   "main": "./index.js",
   "engines": {
-    "node": ">= 4.0"
+    "node": ">= 6.0"
   },
   "scripts": {
     "test": "./node_modules/.bin/tape test/start.js | tap-spec",
@@ -23,7 +23,7 @@
     "colors": "latest",
     "coveralls": "latest",
     "nyc": "latest",
-    "promises-aplus-tests": "^2.1.1",
+    "promises-aplus-tests": "latest",
     "request": "latest",
     "tap-spec": "latest",
     "tape": "latest"

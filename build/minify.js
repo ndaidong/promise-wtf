@@ -59,7 +59,7 @@ var log = {
 };
 
 var minify = () => {
-  let file = SOURCE + 'Promise.js';
+  let file = SOURCE + 'main.js';
   let s = fs.readFileSync(file);
   send(s).then((json) => {
     if (json.errors) {

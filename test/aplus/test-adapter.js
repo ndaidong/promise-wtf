@@ -1,5 +1,4 @@
-var assert = require('assert');
-var Promise = require('../../src/Promise');
+var Promise = require('../../src/main');
 
 var defer = () => {
   var deferred = {};

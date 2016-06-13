@@ -1,9 +1,7 @@
 
-/* eslint no-console: 0 */
-
 'use strict';
 
-var Promise = require('../../src/Promise');
+var Promise = require('../../src/main');
 
 var fakeAsyncRead = (text, callback) => {
   setTimeout(() => {
@@ -136,7 +134,7 @@ Promise.series([
     });
   },
   (next) => {
-    let t = null;
+    let t = 'Eight';
     fakeAsyncRead(t, (err, content) => {
       if (!err && content) {
         arr.push(content);
