@@ -4,9 +4,20 @@
  * @ndaidong
 **/
 
-'use strict';
-
-(() => {
+((name, factory) => {
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = factory();
+  } else {
+    var root = window || {};
+    if (root.define && root.define.amd) {
+      root.define([], factory);
+    } else if (root.exports) {
+      root.exports = factory();
+    } else {
+      root[name] = factory();
+    }
+  }
+})('Promise', () => { // eslint-disable-line no-invalid-this
 
   const ENV = typeof module !== 'undefined' && module.exports ? 'node' : 'browser';
 
@@ -129,48 +140,35 @@
     $P = root.Promise;
   }
 
-  $P.prototype['finally'] = (func) => { // eslint-disable-line dot-notation
-    if (func && isFunction(func)) {
-      return func();
-    }
-    return doNothing();
+  $P.prototype['finally'] = function(func) { // eslint-disable-line
+    return this.then((value) => {
+      return $P.resolve(func()).then(() => {
+        return value;
+      });
+    }, (error) => {
+      return $P.resolve(func()).then(() => {
+        throw error;
+      });
+    });
   };
 
   $P.series = (tasks) => {
     return new $P((resolve, reject) => {
-      let exec, check;
-      let k = 0, t = tasks.length;
-
-      exec = (err) => {
-        if (err) {
-          return reject(err);
-        }
-        return check();
+      let t = tasks.length;
+      let exec = (k) => {
+        tasks[k]((err) => {
+          if (err) {
+            return reject(err);
+          }
+          if (k < t - 1) {
+            return exec(k + 1);
+          }
+          return resolve();
+        });
       };
-
-      check = () => {
-        k++;
-        if (k <= t) {
-          let f = tasks[k - 1];
-          return f(exec);
-        }
-        return resolve();
-      };
-
-      return check();
-
+      return exec(0);
     });
   };
 
-  // exports
-  if (ENV === 'node') {
-    module.exports = $P;
-  } else {
-    if (root.define && root.define.amd) {
-      root.define(() => {
-        return $P;
-      });
-    }
-    root.Promise = $P;
-  }
-})();
+  return $P;
+});

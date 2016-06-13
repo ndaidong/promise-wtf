@@ -1,6 +1,6 @@
-var promisesAplusTests = require("promises-aplus-tests");
+var promisesAplusTests = require('promises-aplus-tests');
 var adapter = require('./test-adapter');
-promisesAplusTests(adapter, function (err) {
+promisesAplusTests(adapter, (err) => {
   if (err) {
     console.log(err);
   } else {
