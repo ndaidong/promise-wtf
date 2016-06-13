@@ -1,5 +1,5 @@
 {
-  "version": "0.1.21",
+  "version": "0.1.22",
   "name": "promise-wtf",
   "description": "Lightweight Promise implementation with the 'finally' method",
   "homepage": "http://techpush.net",
@@ -13,11 +13,12 @@
     "node": ">= 6.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/tape test/start.js | tap-spec",
+    "test": "./node_modules/.bin/snyk test && ./node_modules/.bin/tape test/start.js | tap-spec",
     "coverage": "npm run build && ./node_modules/.bin/nyc tape test/start.js | tap-spec",
     "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
     "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "build": "node build/minify"
+    "build": "node build/minify",
+    "snyk": "./node_modules/.bin/snyk wizard"
   },
   "devDependencies": {
     "colors": "latest",
@@ -25,6 +26,7 @@
     "nyc": "latest",
     "promises-aplus-tests": "latest",
     "request": "latest",
+    "snyk": "latest",
     "tap-spec": "latest",
     "tape": "latest"
   },

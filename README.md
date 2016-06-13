@@ -5,6 +5,7 @@ Lightweight Promise implementation **w**ith **t**he "**f**inally" method
 ![Travis](https://travis-ci.org/ndaidong/promise-wtf.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/promise-wtf/badge.svg?branch=master)](https://coveralls.io/github/ndaidong/promise-wtf?branch=master)
 ![devDependency Status](https://david-dm.org/ndaidong/promise-wtf.svg)
+[![Known Vulnerabilities](https://snyk.io/test/npm/promise-wtf/badge.svg)](https://snyk.io/test/npm/promise-wtf)
 
 
 ## Why
@@ -57,14 +58,14 @@ However, it's better to have "finally" there:
 Unfortunately, "finally" is only available in some libraries such as Bluebird, or Q+, those are quite heavy to load for client side usage. What I need is just a basic prototype, a simple polyfill with "finally" implemented.
 
 
-## What
+## What's different
 
-This version only supports the Promise constructor and 4 static methods:
+This variant provides the Promise constructor and 4 static methods:
 
 - [Promise.resolve](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
 - [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
-- [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) (v0.0.9)
+- [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) (since v0.0.9)
 
 
 
