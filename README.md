@@ -62,11 +62,10 @@ Unfortunately, "finally" is only available in some libraries such as Bluebird, o
 
 This variant provides the Promise constructor and 4 static methods:
 
-- [Promise.resolve](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
-- [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)
+- [Promise.resolve](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)
+- [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 - [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) (since v0.0.9)
-
 
 
 ## How
