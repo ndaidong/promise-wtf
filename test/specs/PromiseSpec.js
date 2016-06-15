@@ -14,9 +14,8 @@ var test = require('tape');
 var root = global;
 root.Promise = false;
 
-const TESTDEV = 0;
-var rootDir = TESTDEV === 1 ? '../../src/' : '../../dist/';
-var Promise = require(path.join(rootDir, TESTDEV === 1 ? 'main.js' : 'Promise.min.js'));
+var rootDir = '../../dist/';
+var Promise = require(path.join(rootDir, 'promise-wtf.min.js'));
 
 var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
