@@ -67,7 +67,7 @@ This variant provides the Promise constructor and 4 static methods:
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 - [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) (since v0.0.9)
 
-* Promise.series works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
+Promise.series works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
 
 ```
 Promise.series([
