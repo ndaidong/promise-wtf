@@ -17,7 +17,7 @@
       root[name] = factory();
     }
   }
-})('Promise', () => { // eslint-disable-line no-invalid-this
+})('Promise', () => {
 
   const ENV = typeof module !== 'undefined' && module.exports ? 'node' : 'browser';
 
