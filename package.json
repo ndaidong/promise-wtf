@@ -1,5 +1,5 @@
 {
-  "version": "0.1.25",
+  "version": "1.0.0",
   "name": "promise-wtf",
   "description": "Lightweight Promise implementation with the 'finally' method",
   "homepage": "http://techpush.net",
@@ -13,12 +13,12 @@
     "node": ">= 6.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/snyk test && ./node_modules/.bin/tape test/start.js | tap-spec",
-    "coverage": "npm run build && ./node_modules/.bin/nyc tape test/start.js | tap-spec",
-    "report": "npm run coverage && ./node_modules/.bin/nyc report --reporter=lcov",
-    "coveralls": "npm run report && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "build": "./node_modules/.bin/gccmin src dist",
-    "snyk": "./node_modules/.bin/snyk wizard"
+    "test": "snyk test && tape test/start.js | tap-spec",
+    "coverage": "npm run build && nyc tape test/start.js | tap-spec",
+    "report": "npm run coverage && nyc report --reporter=lcov",
+    "coveralls": "npm run report && cat ./coverage/lcov.info | coveralls",
+    "build": "gccmin src dist",
+    "snyk": "snyk wizard"
   },
   "devDependencies": {
     "coveralls": "latest",
