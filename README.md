@@ -66,7 +66,7 @@ This variant inherits the native [Promise object's prototype](https://developer.
 - [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 
-In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method (since v0.0.9) that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
+In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
 
 ```
 Promise.series([
@@ -122,8 +122,10 @@ git clone https://github.com/ndaidong/promise-wtf.git
 cd promise-wtf
 npm install
 npm test
-```
 
+// run Promises/A+ Compliance Test Suite
+npm run aplus
+```
 
 # License
 

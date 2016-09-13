@@ -19,12 +19,13 @@
     "report": "npm run coverage && nyc report --reporter=lcov",
     "coveralls": "npm run report && cat ./coverage/lcov.info | coveralls",
     "build": "gccmin src dist",
-    "snyk": "snyk wizard"
+    "aplus": "node ./test/aplus/index.js"
   },
   "devDependencies": {
     "coveralls": "latest",
     "eslint": "latest",
     "gcc-min": "latest",
+    "mocha": "latest",
     "nyc": "latest",
     "promises-tests": "latest",
     "snyk": "latest",
