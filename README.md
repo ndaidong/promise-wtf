@@ -4,8 +4,9 @@ Lightweight Promise implementation **w**ith **t**he "**f**inally" method
 [![NPM](https://badge.fury.io/js/promise-wtf.svg)](https://badge.fury.io/js/promise-wtf)
 ![Travis](https://travis-ci.org/ndaidong/promise-wtf.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/promise-wtf/badge.svg?branch=master)](https://coveralls.io/github/ndaidong/promise-wtf?branch=master)
-![devDependency Status](https://david-dm.org/ndaidong/promise-wtf.svg)
+[![Dependency Status](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae)
 [![Known Vulnerabilities](https://snyk.io/test/npm/promise-wtf/badge.svg)](https://snyk.io/test/npm/promise-wtf)
+[![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)   
 
 
 ## Why
