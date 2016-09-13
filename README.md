@@ -4,7 +4,7 @@ Lightweight Promise implementation **w**ith **t**he "**f**inally" method
 [![NPM](https://badge.fury.io/js/promise-wtf.svg)](https://badge.fury.io/js/promise-wtf)
 ![Travis](https://travis-ci.org/ndaidong/promise-wtf.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/promise-wtf/badge.svg?branch=master)](https://coveralls.io/github/ndaidong/promise-wtf?branch=master)
-![devDependency Status](https://david-dm.org/ndaidong/promise-wtf.svg)
+[![Dependency Status](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae)
 [![Known Vulnerabilities](https://snyk.io/test/npm/promise-wtf/badge.svg)](https://snyk.io/test/npm/promise-wtf)
 
 
@@ -58,16 +58,15 @@ However, it's better to have "finally" there:
 Unfortunately, "finally" is only available in some libraries such as Bluebird, or Q+, those are quite heavy to load for client side usage. What I need is just a basic prototype, a simple polyfill with "finally" implemented.
 
 
-## What's different
+## What's different?
 
-This variant provides the Promise constructor and 4 static methods:
+This variant inherits the native [Promise object's prototype](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise) if any. Otherwise, it provides Promise constructor and 3 static methods:
 
 - [Promise.resolve](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/resolve)
 - [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
-- [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) (since v0.0.9)
 
-Promise.series works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
+In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method (since v0.0.9) that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
 
 ```
 Promise.series([
@@ -98,88 +97,22 @@ Promise.series([
 
 ## How
 
-In node.js
+- Node.js
 
-```
-npm install promise-wtf
-```
+  ```
+  npm install promise-wtf
+  ```
 
-And then:
+- CDN
 
-```
-var fs = require('fs');
-var Promise = require('promise-wtf');
+  [Promise.min.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js)
 
-var read = (file) => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(file, 'utf8', (err, content) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(content);
-    });
-  });
-};
+  ```
+  <script type="text/javascript" src="https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js"></script>
+  ```
 
-read('./hello.txt').then((a) => {
-  a += 'I like Promise';
-  return a;
-}).then((b) => {
-  b += '\nI need finally';
-  return b;
-}).then((c) => {
-  console.log(c);
-}).catch((err) => {
-  console.log(err);
-}).finally(() => {
-  console.log('Done');
-});
-```
+- This library also supports ES6 Module, AMD and UMD style.
 
-Ouput:
-```
-Hello
-I like Promise
-I need finally
-Done
-```
-
-
-##### Using SystemJS
-
-```
-  System.config({
-    baseURL: '/path/to/promise-wtf.js/folder',
-    map: {
-      promise: 'promise-wtf'
-    }
-  });
-
-  System.import('promise').then(function(Promise){
-    // use Promise here
-  });
-
-```
-
-##### Using RequireJS
-
-```
-require.config({
-  baseUrl: '/path/to/promise-wtf.js/folder',
-  paths: {
-    promise: 'promise-wtf'
-  }
-});
-
-requirejs('promise', function(Promise){
-  // use Promise here
-});
-
-```
-
-#### CDN
-
-[Promise.min.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js)
 
 
 ## Test
