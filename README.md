@@ -4,7 +4,7 @@ Lightweight Promise implementation **w**ith **t**he "**f**inally" method
 [![NPM](https://badge.fury.io/js/promise-wtf.svg)](https://badge.fury.io/js/promise-wtf)
 ![Travis](https://travis-ci.org/ndaidong/promise-wtf.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/ndaidong/promise-wtf/badge.svg?branch=master)](https://coveralls.io/github/ndaidong/promise-wtf?branch=master)
-[![Dependency Status](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae)
+[![Dependency Status](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae/badge.svg?style=flat)](https://www.versioneye.com/user/projects/57d7ad7edf40d0004a4aa1ae)
 [![Known Vulnerabilities](https://snyk.io/test/npm/promise-wtf/badge.svg)](https://snyk.io/test/npm/promise-wtf)
 
 
@@ -66,7 +66,7 @@ This variant inherits the native [Promise object's prototype](https://developer.
 - [Promise.reject](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/reject)
 - [Promise.all](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 
-In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method (since v0.0.9) that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
+In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
 
 ```
 Promise.series([
@@ -122,8 +122,10 @@ git clone https://github.com/ndaidong/promise-wtf.git
 cd promise-wtf
 npm install
 npm test
-```
 
+// run Promises/A+ Compliance Test Suite
+npm run aplus
+```
 
 # License
 
