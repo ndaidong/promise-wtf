@@ -69,6 +69,8 @@ This variant inherits the native [Promise object's prototype](https://developer.
 In addition, there is also [Promise.series](https://github.com/ndaidong/promise-wtf/issues/2) method that works as same as [async.series](https://github.com/caolan/async#seriestasks-callback) but follows Promise style, for example:
 
 ```
+var Promise = require('promise-wtf');
+
 Promise.series([
   (next) => {
     setTimeout(next, 300);
