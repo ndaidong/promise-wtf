@@ -3,14 +3,12 @@
  * @ndaidong
  */
 
-var path = require('path');
 var test = require('tape');
 
 var root = global;
 root.Promise = false;
 
-var rootDir = '../../dist/';
-var Promise = require(path.join(rootDir, 'promise-wtf.min.js'));
+var Promise = require('../../dist/promise-wtf.min.js');
 
 var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
