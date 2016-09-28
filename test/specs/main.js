@@ -8,7 +8,7 @@ var test = require('tape');
 var root = global;
 root.Promise = false;
 
-var Promise = require('../../dist/promise-wtf.min.js');
+var Promise = require('../../dist/promise-wtf.min');
 
 var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
