@@ -107,11 +107,8 @@ Promise.series([
 
 - CDN
 
-  [Promise.min.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js)
-
-  ```
-  <script type="text/javascript" src="https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js"></script>
-  ```
+  - [promise-wtf.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.js)
+  - [promise-wtf.min.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js)
 
 - This library also supports ES6 Module, AMD and UMD style.
 
