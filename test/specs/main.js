@@ -8,7 +8,7 @@ var test = require('tape');
 var root = global;
 root.Promise = false;
 
-var Promise = require('../../dist/promise-wtf.min');
+var Promise = require('../../src/main');
 
 var hasMethod = (ob, m) => {
   return ob[m] && typeof ob[m] === 'function';
@@ -57,7 +57,6 @@ test('Testing Promise result after then', (assert) => {
     assert.end();
   });
 });
-
 
 test('Testing Promise.all', (assert) => {
   Promise.all([

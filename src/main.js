@@ -4,166 +4,139 @@
  * @ndaidong
 **/
 
-((name, factory) => {
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = factory();
-  } else {
-    var root = window || {};
-    if (root.define && root.define.amd) {
-      root.define([], factory);
-    } else if (root.exports) {
-      root.exports = factory();
-    } else {
-      root[name] = factory();
-    }
-  }
-})('Promise', () => {
+const ENV = typeof module !== 'undefined' && module.exports ? 'node' : 'browser';
 
-  const ENV = typeof module !== 'undefined' && module.exports ? 'node' : 'browser';
+const PENDING = 0;
+const REJECTED = 1;
+const RESOLVED = 2;
 
-  const PENDING = 0;
-  const REJECTED = 1;
-  const RESOLVED = 2;
+var isFunction = (v) => {
+  return v && {}.toString.call(v) === '[object Function]';
+};
 
-  var isFunction = (v) => {
-    return v && {}.toString.call(v) === '[object Function]';
-  };
+class P {
 
-  var doNothing = () => {
-    return;
-  };
+  constructor(fn) {
 
-  class P {
+    let _state = PENDING;
+    let _deferred = null;
+    let _value;
 
-    constructor(fn) {
+    let self = this; // eslint-disable-line consistent-this
 
-      let _state = PENDING;
-      let _deferred = null;
-      let _value;
+    let handle = (instance) => {
 
-      let self = this; // eslint-disable-line consistent-this
+      if (_state === PENDING) {
+        _deferred = instance;
+        return false;
+      }
 
-      let handle = (instance) => {
+      let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
 
-        if (_state === PENDING) {
-          _deferred = instance;
-          return false;
-        }
+      if (!cb) {
+        return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
+      }
 
-        let cb = _state === RESOLVED ? instance.onResolved : instance.onRejected;
+      return instance.resolve(cb(_value));
+    };
 
-        if (!cb) {
-          return _state === RESOLVED ? instance.resolve(_value) : instance.reject(_value);
-        }
+    let reject = (reason) => {
+      _state = REJECTED;
+      _value = reason;
 
-        return instance.resolve(cb(_value));
-      };
+      if (_deferred) {
+        handle(_deferred);
+      }
+    };
 
-      let reject = (reason) => {
-        _state = REJECTED;
-        _value = reason;
+    let resolve = (instance) => {
+      if (instance && isFunction(instance.then)) {
+        instance.then(resolve, reject);
+        return;
+      }
+      _state = RESOLVED;
+      _value = instance;
 
-        if (_deferred) {
-          handle(_deferred);
-        }
-      };
+      if (_deferred) {
+        handle(_deferred);
+      }
+    };
 
-      let resolve = (instance) => {
-        if (instance && isFunction(instance.then)) {
-          instance.then(resolve, reject);
-          return;
-        }
-        _state = RESOLVED;
-        _value = instance;
-
-        if (_deferred) {
-          handle(_deferred);
-        }
-      };
-
-      self.then = (onResolved, onRejected) => {
-        return new P((_resolve, _reject) => {
-          return handle({
-            onResolved,
-            onRejected,
-            resolve: _resolve,
-            reject: _reject
-          });
-        });
-      };
-
-      self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
-        if (onRejected && isFunction(onRejected)) {
-          return self.then(null, onRejected);
-        }
-        return doNothing();
-      };
-
-      return fn(resolve, reject);
-    }
-
-    static resolve(value) {
-      return new P((resolve) => {
-        return resolve(value);
-      });
-    }
-
-    static reject(value) {
-      return new P((resolve, reject) => {
-        return reject(value);
-      });
-    }
-
-    static all(promises) {
-
-      let results = [];
-      let done = P.resolve(null);
-
-      promises.forEach((promise) => {
-        done = done.then(() => {
-          return promise;
-        }).then((value) => {
-          results.push(value);
+    self.then = (onResolved, onRejected) => {
+      return new P((_resolve, _reject) => {
+        return handle({
+          onResolved,
+          onRejected,
+          resolve: _resolve,
+          reject: _reject
         });
       });
-      return done.then(() => {
-        return results;
-      });
-    }
+    };
+
+    self['catch'] = (onRejected) => { // eslint-disable-line dot-notation
+      return self.then(null, onRejected);
+    };
+
+    return fn(resolve, reject);
   }
 
-  var root = ENV === 'node' ? global : window;
-  var $P = root.Promise || P;
+  static resolve(value) {
+    return new P((resolve) => {
+      return resolve(value);
+    });
+  }
 
-  $P.prototype['finally'] = function(func) { // eslint-disable-line
-    return this.then((value) => {
-      return $P.resolve(func()).then(() => {
-        return value;
-      });
-    }, (error) => {
-      return $P.resolve(func()).then(() => {
-        throw error;
+  static reject(value) {
+    return new P((resolve, reject) => {
+      return reject(value);
+    });
+  }
+
+  static all(promises) {
+
+    let results = [];
+    let done = P.resolve(null);
+
+    promises.forEach((promise) => {
+      done = done.then(() => {
+        return promise;
+      }).then((value) => {
+        results.push(value);
       });
     });
-  };
-
-  $P.series = (tasks) => {
-    return new $P((resolve, reject) => {
-      let t = tasks.length;
-      let exec = (k) => {
-        tasks[k]((err) => {
-          if (err) {
-            return reject(err);
-          }
-          if (k < t - 1) {
-            return exec(k + 1);
-          }
-          return resolve();
-        });
-      };
-      return exec(0);
+    return done.then(() => {
+      return results;
     });
-  };
+  }
+}
 
-  return $P;
-});
+var root = ENV === 'node' ? global : window;
+var $P = root.Promise || P;
+
+$P.prototype['finally'] = function(func) { // eslint-disable-line
+  return this.then((value) => {
+    return $P.resolve(func()).then(() => {
+      return value;
+    });
+  });
+};
+
+$P.series = (tasks) => {
+  return new $P((resolve, reject) => {
+    let t = tasks.length;
+    let exec = (k) => {
+      tasks[k]((err) => {
+        if (err) {
+          return reject(err);
+        }
+        if (k < t - 1) {
+          return exec(k + 1);
+        }
+        return resolve();
+      });
+    };
+    return exec(0);
+  });
+};
+
+module.exports = $P;
