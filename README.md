@@ -109,9 +109,9 @@ Promise.series([
 
   - [promise-wtf.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.js)
   - [promise-wtf.min.js](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.js)
+  - [promise-wtf.min.map](https://cdn.rawgit.com/ndaidong/promise-wtf/master/dist/promise-wtf.min.map)
 
-- This library also supports ES6 Module, AMD and UMD style.
-
+- Also supports ES6 Module, CommonJS, AMD and UMD style.
 
 
 ## Test
