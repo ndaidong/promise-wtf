@@ -111,9 +111,10 @@ class P {
 }
 
 var root = ENV === 'node' ? global : window;
+
 var $P = root.Promise || P;
 
-$P.prototype['finally'] = function(func) { // eslint-disable-line
+$P.prototype['finally'] = function (func) {
   return this.then((value) => {
     return $P.resolve(func()).then(() => {
       return value;

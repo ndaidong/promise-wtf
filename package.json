@@ -1,5 +1,5 @@
 {
-  "version": "1.2.3",
+  "version": "1.2.4",
   "name": "promise-wtf",
   "description": "Lightweight Promise implementation with the 'finally' method",
   "homepage": "https://www.npmjs.com/package/promise-wtf",
@@ -22,9 +22,9 @@
     "report": "nyc report --reporter=lcov > coverage.lcov && codecov",
     "pretest": "npm run lint && npm run nsp",
     "test": "npm run tape",
-    "posttest": "CODECOV_TOKEN=2841f57e-9a88-4f96-b44d-44f083a8fda9 npm run report",
+    "posttest": "CODECOV_TOKEN=2841f57e-9a88-4f96-b44d-44f083a8fda9 npm run report && npm run aplus",
     "aplus": "node ./test/aplus/index.js",
-    "start": "src/main",
+    "start": "node src/main",
     "build": "gccmin -e src/main.js -n Promise -f promise-wtf -o dist -p package.json",
     "reset": "node reset"
   },
