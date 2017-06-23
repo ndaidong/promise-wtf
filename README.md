@@ -3,9 +3,9 @@ Lightweight Promise implementation **w**ith **t**he "**f**inally" method
 
 [![NPM](https://badge.fury.io/js/promise-wtf.svg)](https://badge.fury.io/js/promise-wtf)
 [![Build Status](https://travis-ci.org/ndaidong/promise-wtf.svg?branch=master)](https://travis-ci.org/ndaidong/promise-wtf)
-[![Coverage Status](https://coveralls.io/repos/github/ndaidong/promise-wtf/badge.svg?branch=master)](https://coveralls.io/github/ndaidong/promise-wtf?branch=master)
+[![codecov](https://codecov.io/gh/ndaidong/promise-wtf/branch/master/graph/badge.svg)](https://codecov.io/gh/ndaidong/promise-wtf)
 [![Dependency Status](https://gemnasium.com/badges/github.com/ndaidong/promise-wtf.svg)](https://gemnasium.com/github.com/ndaidong/promise-wtf)
-[![Known Vulnerabilities](https://snyk.io/test/npm/promise-wtf/badge.svg)](https://snyk.io/test/npm/promise-wtf)
+[![NSP Status](https://nodesecurity.io/orgs/techpush/projects/057d6386-964c-4d64-abe8-79845fa56f9d/badge)](https://nodesecurity.io/orgs/techpush/projects/057d6386-964c-4d64-abe8-79845fa56f9d)
 
 
 ## Why

@@ -8,10 +8,10 @@
     "url": "https://github.com/ndaidong/promise-wtf"
   },
   "author": "@ndaidong",
-  "main": "./dist/Promise.js",
+  "main": "./dist/promise-wtf.js",
   "module": "./src/main",
   "jsnext:main": "./src/main",
-  "browser": "./dist/Promise.min.js",
+  "browser": "./dist/promise-wtf.min.js",
   "engines": {
     "node": ">= 6.0"
   },
@@ -23,6 +23,7 @@
     "pretest": "npm run lint && npm run nsp",
     "test": "npm run tape",
     "posttest": "CODECOV_TOKEN=2841f57e-9a88-4f96-b44d-44f083a8fda9 npm run report",
+    "aplus": "node ./test/aplus/index.js",
     "start": "src/main",
     "build": "gccmin -e src/main.js -n Promise -f promise-wtf -o dist -p package.json",
     "reset": "node reset"
@@ -32,6 +33,7 @@
     "eslint": "4.x.x",
     "eslint-config-ggc": "1.x.x",
     "gcc-min": "6.x.x",
+    "mocha": "3.x.x",
     "nsp": "2.x.x",
     "nyc": "11.x.x",
     "promises-tests": "latest",
