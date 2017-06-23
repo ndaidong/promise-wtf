@@ -1,6 +1,6 @@
 /**
- * promise-wtf@1.2.3
- * built on: Fri, 23 Jun 2017 08:31:20 GMT
+ * promise-wtf@1.2.4
+ * built on: Fri, 23 Jun 2017 09:41:50 GMT
  * repository: https://github.com/ndaidong/promise-wtf
  * maintainer: @ndaidong
  * License: MIT

@@ -1,4 +1,3 @@
-
 var Promise = require('../../src/main');
 
 var fakeAsyncRead = (text, callback) => {
